@@ -48,6 +48,25 @@ pub async fn finish_login(
     Ok(credentials)
 }
 
+/// Creates a local offline account, which does not require a Microsoft
+/// account. The account can play in singleplayer and on offline-mode servers.
+#[tracing::instrument]
+pub async fn add_offline_account(username: &str) -> crate::Result<Credentials> {
+    let state = State::get().await?;
+
+    let credentials = Credentials::offline_login(username, &state.pool).await?;
+
+    if let Err(error) =
+        crate::onboarding_checklist::mark_logged_into_minecraft().await
+    {
+        tracing::warn!(
+            "Failed to mark Minecraft login in onboarding checklist: {error}"
+        );
+    }
+
+    Ok(credentials)
+}
+
 #[tracing::instrument]
 pub async fn get_default_user() -> crate::Result<Option<uuid::Uuid>> {
     let state = State::get().await?;

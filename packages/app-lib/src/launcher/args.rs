@@ -335,7 +335,11 @@ fn parse_minecraft_argument(
         .replace("${uuid}", &uuid.simple().to_string())
         .replace("${clientid}", "c4502edb-87c6-40cb-b595-64a280cf8906")
         .replace("${user_properties}", "{}")
-        .replace("${user_type}", "msa")
+        // Offline accounts have no access token and are not Microsoft accounts
+        .replace(
+            "${user_type}",
+            if access_token.is_empty() { "legacy" } else { "msa" },
+        )
         .replace("${version_name}", version)
         .replace("${assets_index_name}", asset_index_name)
         .replace(

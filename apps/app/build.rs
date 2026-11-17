@@ -14,6 +14,7 @@ fn main() {
                     .commands(&[
                         "check_reachable",
                         "login",
+                        "add_offline_account",
                         "remove_user",
                         "get_default_user",
                         "set_default_user",
@@ -405,29 +406,6 @@ fn main() {
                         "get_opening_command",
                         "get_image_thumbnail",
                         "cache_remote_icon",
-                    ])
-                    .default_permission(
-                        DefaultPermissionRule::AllowAllCommands,
-                    ),
-            )
-            .plugin(
-                "ads",
-                InlinedPlugin::new()
-                    .commands(&[
-                        "init_ads_window",
-                        "hide_ads_window",
-                        "update_ads_window_hold",
-                        "show_ads_consent_ui",
-                        "expand_ads_consent_webview",
-                        "open_ads_consent_preferences",
-                        "finish_ads_consent_flow",
-                        "should_show_ads_consent_popup",
-                        "perform_ads_consent_action",
-                        "record_ads_click",
-                        "open_link",
-                        "get_ads_personalization",
-                        "get_ads_debug_state",
-                        "report_ads_debug_state",
                     ])
                     .default_permission(
                         DefaultPermissionRule::AllowAllCommands,

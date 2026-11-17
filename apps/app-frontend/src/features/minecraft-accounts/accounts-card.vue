@@ -9,6 +9,10 @@
 			<SpinnerIcon v-else class="animate-spin" />
 			{{ formatMessage(messages.signInToMinecraft) }}
 		</Button>
+		<Button :disabled="loginDisabled" @click="offlineModal?.show()">
+			<UserPlusIcon />
+			{{ formatMessage(messages.addOfflineAccount) }}
+		</Button>
 	</div>
 	<Accordion
 		v-else
@@ -30,7 +34,11 @@
 					<span class="truncate w-full text-left">{{
 						selectedAccount ? selectedAccount.profile.name : formatMessage(messages.selectAccount)
 					}}</span>
-					<span class="text-secondary text-xs">{{ formatMessage(messages.minecraftAccount) }}</span>
+					<span class="text-secondary text-xs">{{
+						selectedAccount?.offline
+							? formatMessage(messages.offlineAccountLabel)
+							: formatMessage(messages.minecraftAccount)
+					}}</span>
 				</div>
 			</div>
 		</template>
@@ -80,9 +88,19 @@
 					<PlusIcon />
 					{{ formatMessage(messages.addAccount) }}
 				</Button>
+				<Button
+					class="w-full !bg-button-bg !text-primary ![box-shadow:var(--shadow-button)]"
+					:disabled="loginDisabled"
+					@click="offlineModal?.show()"
+				>
+					<UserPlusIcon />
+					{{ formatMessage(messages.addOfflineAccount) }}
+				</Button>
 			</div>
 		</div>
 	</Accordion>
+
+	<AddOfflineAccountModal ref="offlineModal" @created="handleOfflineAccountCreated" />
 </template>
 
 <script setup lang="ts">
@@ -93,6 +111,7 @@ import {
 	RadioButtonIcon,
 	SpinnerIcon,
 	TrashIcon,
+	UserPlusIcon,
 } from '@modrinth/assets'
 import {
 	Accordion,
@@ -108,6 +127,7 @@ import { computed, onUnmounted, ref } from 'vue'
 
 import { useAppEvent } from '@/composables/use-app-event'
 import { handleSevereError } from '@/composables/use-error.js'
+import AddOfflineAccountModal from '@/features/minecraft-accounts/add-offline-account-modal.vue'
 import { trackEvent } from '@/helpers/analytics'
 import {
 	get_default_user,
@@ -132,10 +152,12 @@ type MinecraftCredential = {
 		id: string
 		name: string
 	}
+	offline?: boolean
 }
 
 const accounts: Ref<MinecraftCredential[]> = ref([])
 const loginDisabled = ref(false)
+const offlineModal = ref<InstanceType<typeof AddOfflineAccountModal> | null>(null)
 const defaultUser = ref<string | undefined>()
 const equippedSkin = ref<Skin | null>(null)
 const equippedHeadUrl = ref<string>()
@@ -202,6 +224,9 @@ const selectedAccount = computed(() =>
 )
 
 const avatarUrl = computed(() => {
+	if (selectedAccount.value?.offline) {
+		return 'https://launcher-files.modrinth.com/assets/steve_head.png'
+	}
 	if (equippedSkin.value?.texture_key) {
 		const cachedUrl = equippedHeadUrl.value
 		if (cachedUrl) {
@@ -216,6 +241,9 @@ const avatarUrl = computed(() => {
 })
 
 function getAccountAvatarUrl(account: MinecraftCredential) {
+	if (account.offline) {
+		return 'https://launcher-files.modrinth.com/assets/steve_head.png'
+	}
 	if (
 		account.profile.id === selectedAccount.value?.profile?.id &&
 		equippedSkin.value?.texture_key
@@ -245,6 +273,10 @@ async function login() {
 
 	trackEvent('AccountLogIn')
 	loginDisabled.value = false
+}
+
+async function handleOfflineAccountCreated(account: MinecraftCredential) {
+	await setAccount(account)
 }
 
 async function logout(id: string) {
@@ -288,6 +320,14 @@ const messages = defineMessages({
 	signInToMinecraft: {
 		id: 'minecraft-account.sign-in',
 		defaultMessage: 'Sign in to Minecraft',
+	},
+	addOfflineAccount: {
+		id: 'minecraft-account.add-offline-account',
+		defaultMessage: 'Add offline account',
+	},
+	offlineAccountLabel: {
+		id: 'minecraft-account.offline-label',
+		defaultMessage: 'Offline account',
 	},
 })
 </script>

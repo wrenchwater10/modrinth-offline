@@ -10,6 +10,7 @@ pub fn init<R: Runtime>() -> TauriPlugin<R> {
         .invoke_handler(tauri::generate_handler![
             check_reachable,
             login,
+            add_offline_account,
             remove_user,
             get_default_user,
             set_default_user,
@@ -82,6 +83,12 @@ pub async fn login<R: Runtime>(
 
     window.close()?;
     Ok(None)
+}
+
+/// Create a local offline account, which does not require a Microsoft account
+#[tauri::command]
+pub async fn add_offline_account(username: String) -> Result<Credentials> {
+    Ok(minecraft_auth::add_offline_account(&username).await?)
 }
 
 #[tauri::command]

@@ -13,9 +13,6 @@
 		<template v-if="showCreatorStats" #header-details="{ user }">
 			<CreatorStatusStats :id="user.id" kind="user" class="!mt-0 !text-base" />
 		</template>
-		<template #sidebar>
-			<AdPlaceholder v-if="!auth.user" />
-		</template>
 	</UserProfilePageLayout>
 </template>
 
@@ -27,7 +24,6 @@ import { isStaff } from '@modrinth/utils'
 import { useQueryClient } from '@tanstack/vue-query'
 
 import CreatorStatusStats from '~/components/CreatorStatusStats.vue'
-import AdPlaceholder from '~/components/ui/AdPlaceholder.vue'
 import CollectionCreateModal from '~/components/ui/create/CollectionCreateModal.vue'
 import ProjectCreateModal from '~/components/ui/create/ProjectCreateModal.vue'
 import { useModerationSettings } from '~/composables/moderation'

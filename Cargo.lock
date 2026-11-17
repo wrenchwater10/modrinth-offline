@@ -13837,6 +13837,7 @@ dependencies = [
  "itertools 0.15.0",
  "json5",
  "libc",
+ "md-5",
  "minecraft-meta-manifest",
  "modrinth-content-management",
  "notify",

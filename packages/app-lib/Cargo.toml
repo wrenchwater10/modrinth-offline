@@ -46,6 +46,7 @@ indicatif = { workspace = true, optional = true }
 infer = { workspace = true }
 itertools = { workspace = true }
 json5 = { workspace = true }
+md-5 = "0.11"
 minecraft-meta-manifest = { workspace = true }
 modrinth-content-management = { workspace = true }
 notify = { workspace = true }

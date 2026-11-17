@@ -17,6 +17,8 @@ mod api;
 #[cfg(target_os = "macos")]
 mod macos;
 
+mod portable;
+
 #[cfg(feature = "updater")]
 mod updater_impl;
 #[cfg(not(feature = "updater"))]
@@ -115,6 +117,8 @@ async fn set_restart_after_pending_update(
 // if Tauri app is called with arguments, then those arguments will be treated as commands
 // ie: deep links or filepaths for .mrpacks
 fn main() {
+    let portable_data_dir = portable::init();
+
     theseus::install_crypto_provider();
 
     let runtime = tokio::runtime::Builder::new_multi_thread()
@@ -150,6 +154,13 @@ fn main() {
     let _log_guard = theseus::start_logger(&tauri_context.config().identifier);
 
     tracing::info!("Initialized tracing subscriber. Loading Modrinth App!");
+
+    if let Some(data_dir) = &portable_data_dir {
+        tracing::info!(
+            "Running in portable mode with data directory {}",
+            data_dir.display()
+        );
+    }
 
     let mut builder = tauri::Builder::default();
 
@@ -248,15 +259,22 @@ fn main() {
     let window_state_flags =
         window_state_flags | tauri_plugin_window_state::StateFlags::DECORATIONS;
 
-    builder = builder
-        .plugin(
+    if portable_data_dir.is_none() {
+        builder = builder.plugin(
             tauri_plugin_window_state::Builder::default()
                 .with_filename("app-window-state.json")
                 .with_denylist(&["signin"])
                 // Restoring VISIBLE would override the hidden startup window.
                 .with_state_flags(window_state_flags)
                 .build(),
-        )
+        );
+    } else {
+        // Window state is stored in the OS app config directory, which portable
+        // mode must not write to.
+        tracing::info!("Portable mode: not persisting window state");
+    }
+
+    builder = builder
         .setup(|app| {
             #[cfg(target_os = "macos")]
             {
@@ -326,7 +344,6 @@ fn main() {
         .plugin(api::utils::init())
         .plugin(api::cache::init())
         .plugin(api::files::init())
-        .plugin(api::ads::init())
         .plugin(api::friends::init())
         .plugin(api::worlds::init())
         .manage(PendingUpdateData::default())

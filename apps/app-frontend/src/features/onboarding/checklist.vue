@@ -3,12 +3,14 @@ import { CheckIcon, RadioButtonIcon } from '@modrinth/assets'
 import { Accordion, defineMessages, useVIntl } from '@modrinth/ui'
 import { computed, onUnmounted, ref } from 'vue'
 
+import AddOfflineAccountModal from '@/features/minecraft-accounts/add-offline-account-modal.vue'
 import { injectOnboardingChecklist } from '@/providers/onboarding-checklist'
 
 const emit = defineEmits<{
 	'create-instance': []
 	'login-minecraft': []
 	'login-modrinth': []
+	'offline-account-created': []
 }>()
 
 const { formatMessage } = useVIntl()
@@ -19,6 +21,7 @@ const {
 	isReady,
 	showChecklist,
 } = injectOnboardingChecklist()
+const offlineModal = ref<InstanceType<typeof AddOfflineAccountModal> | null>(null)
 const collapsedCornersVisible = ref(false)
 let collapseTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -38,6 +41,10 @@ const messages = defineMessages({
 	loginModrinth: {
 		id: 'onboarding-checklist.login-modrinth',
 		defaultMessage: 'Sign in to Modrinth',
+	},
+	loginOffline: {
+		id: 'onboarding-checklist.login-offline',
+		defaultMessage: 'Sign in with offline account',
 	},
 })
 
@@ -125,6 +132,21 @@ onUnmounted(() => clearTimeout(collapseTimer))
 					{{ step.label }}
 				</span>
 			</button>
+			<button
+				v-if="!hasLoggedIntoMinecraft"
+				type="button"
+				class="flex h-10 w-full items-center gap-2 rounded-xl border border-solid border-button-border bg-button-bg px-4 py-2.5 text-left text-primary shadow-[0_1px_0.5px_rgb(0_0_0_/_12%)] transition-[filter] cursor-pointer hover:brightness-110 active:brightness-90"
+				@click="offlineModal?.show()"
+			>
+				<RadioButtonIcon class="size-5 shrink-0" />
+				<span class="min-w-0 truncate font-medium leading-5">
+					{{ formatMessage(messages.loginOffline) }}
+				</span>
+			</button>
 		</Accordion>
+		<AddOfflineAccountModal
+			ref="offlineModal"
+			@created="emit('offline-account-created')"
+		/>
 	</div>
 </template>

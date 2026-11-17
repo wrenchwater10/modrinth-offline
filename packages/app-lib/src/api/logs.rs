@@ -62,8 +62,18 @@ impl CensoredString {
             // Use the offline profile to guarantee that this function does not cause
             // Mojang API request, and is never delayed by a network request. The offline
             // profile is optimistically updated on upsert from time to time anyway
+            // Offline accounts have no tokens or profile data to censor, and
+            // replacing an empty string would corrupt the log
+            if !credentials.access_token.is_empty() {
+                s = s.replace(
+                    &credentials.access_token,
+                    "{MINECRAFT_ACCESS_TOKEN}",
+                );
+            }
+            if credentials.offline_profile.name.is_empty() {
+                continue;
+            }
             s = s
-                .replace(&credentials.access_token, "{MINECRAFT_ACCESS_TOKEN}")
                 .replace(
                     &credentials.offline_profile.name,
                     "{MINECRAFT_USERNAME}",

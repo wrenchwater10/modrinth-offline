@@ -34,6 +34,15 @@ export async function login() {
 }
 
 /**
+ * Creates a local offline account, which does not require a Microsoft account
+ * @param {string} username
+ * @returns {Promise<Credential>}
+ */
+export async function add_offline_account(username) {
+	return await invoke('plugin:auth|add_offline_account', { username })
+}
+
+/**
  * Retrieves the default user
  * @return {Promise<UUID | undefined>}
  */

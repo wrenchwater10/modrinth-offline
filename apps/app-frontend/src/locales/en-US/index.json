@@ -4556,11 +4556,35 @@
   "minecraft-account.add-account": {
     "message": "Add account"
   },
+  "minecraft-account.add-offline-account": {
+    "message": "Add offline account"
+  },
   "minecraft-account.label": {
     "message": "Minecraft account"
   },
   "minecraft-account.not-signed-in": {
     "message": "Not signed in"
+  },
+  "minecraft-account.offline-create": {
+    "message": "Create account"
+  },
+  "minecraft-account.offline-description": {
+    "message": "Offline accounts don’t need a Microsoft account. They can play in singleplayer and on offline-mode servers, but online-mode servers will not let them join."
+  },
+  "minecraft-account.offline-label": {
+    "message": "Offline account"
+  },
+  "minecraft-account.offline-title": {
+    "message": "Add offline account"
+  },
+  "minecraft-account.offline-username-label": {
+    "message": "Username"
+  },
+  "minecraft-account.offline-username-placeholder": {
+    "message": "Steve"
+  },
+  "minecraft-account.offline-username-rules": {
+    "message": "Usernames must be 3-16 characters and can only use letters, numbers and underscores."
   },
   "minecraft-account.remove-account": {
     "message": "Remove account"
@@ -4633,6 +4657,9 @@
   },
   "onboarding-checklist.login-modrinth": {
     "message": "Sign in to Modrinth"
+  },
+  "onboarding-checklist.login-offline": {
+    "message": "Sign in with offline account"
   },
   "onboarding-checklist.title": {
     "message": "Getting started"

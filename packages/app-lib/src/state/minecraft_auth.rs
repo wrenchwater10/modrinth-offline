@@ -5,6 +5,7 @@ use base64::Engine;
 use base64::prelude::{BASE64_STANDARD, BASE64_URL_SAFE_NO_PAD};
 use chrono::{DateTime, Duration, TimeZone, Utc};
 use dashmap::DashMap;
+use md5::Md5;
 use futures::TryStreamExt;
 use heck::ToTitleCase;
 use p256::ecdsa::signature::Signer;
@@ -336,12 +337,27 @@ impl OnlineProfileCacheIntent {
 }
 
 impl Credentials {
+    /// Whether these credentials belong to a local "offline" account, which is
+    /// not backed by a Microsoft/Xbox account and therefore has no tokens.
+    ///
+    /// Offline accounts are stored without any tokens, which is what
+    /// distinguishes them from real accounts whose tokens have expired (but
+    /// which still have a refresh token).
+    pub fn is_offline(&self) -> bool {
+        self.refresh_token.is_empty() && self.access_token.is_empty()
+    }
+
     /// Refreshes the authentication tokens for this user if they are expired, or
     /// very close to expiration.
     async fn refresh(
         &mut self,
         exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
     ) -> crate::Result<()> {
+        // Offline accounts have nothing to refresh and no tokens to renew
+        if self.is_offline() {
+            return Ok(());
+        }
+
         // Use a margin of 5 minutes to give e.g. Minecraft and potentially
         // other operations that depend on a fresh token 5 minutes to complete
         // from now, and deal with some classes of clock skew
@@ -422,6 +438,11 @@ impl Credentials {
         &self,
         cache_intent: OnlineProfileCacheIntent,
     ) -> Option<Arc<MinecraftProfile>> {
+        // Offline accounts have no online profile to fetch
+        if self.is_offline() {
+            return None;
+        }
+
         let max_age = cache_intent.max_age();
         let stale_profile = {
             let mut profile_cache = PROFILE_CACHE.lock().await;
@@ -663,9 +684,21 @@ impl Credentials {
         &self,
         exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
     ) -> crate::Result<()> {
-        let profile = self.maybe_online_profile().await;
+        // Offline accounts have no online profile to look up, and must not
+        // attempt any Mojang API request
+        let (uuid, username) = if self.is_offline() {
+            (
+                self.offline_profile.id.as_hyphenated().to_string(),
+                self.offline_profile.name.clone(),
+            )
+        } else {
+            let profile = self.maybe_online_profile().await;
+            (
+                profile.id.as_hyphenated().to_string(),
+                profile.name.clone(),
+            )
+        };
         let expires = self.expires.timestamp();
-        let uuid = profile.id.as_hyphenated().to_string();
 
         if self.active {
             sqlx::query!(
@@ -691,7 +724,7 @@ impl Credentials {
             ",
             uuid,
             self.active,
-            profile.name,
+            username,
             self.access_token,
             self.refresh_token,
             expires,
@@ -719,6 +752,62 @@ impl Credentials {
 
         Ok(())
     }
+
+    /// Creates a local account that plays without a Microsoft account.
+    ///
+    /// The player UUID is derived from the username exactly like the vanilla
+    /// server derives offline player UUIDs, so worlds and servers see the same
+    /// identity they would for any other offline-mode player.
+    pub async fn offline_login(
+        username: &str,
+        exec: impl sqlx::Executor<'_, Database = sqlx::Sqlite> + Copy,
+    ) -> crate::Result<Self> {
+        let username = username.trim();
+
+        if !is_valid_offline_username(username) {
+            return Err(ErrorKind::InputError(
+                "offline account usernames must be 3-16 characters long and may only contain letters, numbers and underscores".to_string(),
+            )
+            .into());
+        }
+
+        let credentials = Self {
+            offline_profile: MinecraftProfile {
+                id: offline_player_uuid(username),
+                name: username.to_string(),
+                ..MinecraftProfile::default()
+            },
+            access_token: String::new(),
+            refresh_token: String::new(),
+            expires: Utc::now(),
+            active: true,
+        };
+
+        credentials.upsert(exec).await?;
+
+        Ok(credentials)
+    }
+}
+
+/// Whether a username is acceptable for a local offline account, following the
+/// same rules as Minecraft usernames.
+fn is_valid_offline_username(username: &str) -> bool {
+    (3..=16).contains(&username.len())
+        && username
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '_')
+}
+
+/// Computes the player UUID for an offline account, matching the name-based
+/// UUID that the vanilla server derives for offline-mode players
+/// (`UUID.nameUUIDFromBytes("OfflinePlayer:<name>")`).
+fn offline_player_uuid(username: &str) -> Uuid {
+    let digest = Md5::digest(format!("OfflinePlayer:{username}"));
+    let mut bytes = [0u8; 16];
+    bytes.copy_from_slice(&digest[..16]);
+    bytes[6] = (bytes[6] & 0x0f) | 0x30; // version 3 (MD5)
+    bytes[8] = (bytes[8] & 0x3f) | 0x80; // RFC 4122 variant
+    Uuid::from_bytes(bytes)
 }
 
 impl Serialize for Credentials {
@@ -751,8 +840,9 @@ impl Serialize for Credentials {
                 ),
         };
 
-        let mut ser = serializer.serialize_struct("Credentials", 5)?;
+        let mut ser = serializer.serialize_struct("Credentials", 6)?;
         ser.serialize_field("profile", &*profile)?;
+        ser.serialize_field("offline", &self.is_offline())?;
         ser.serialize_field("access_token", &self.access_token)?;
         ser.serialize_field("refresh_token", &self.refresh_token)?;
         ser.serialize_field("expires", &self.expires)?;
