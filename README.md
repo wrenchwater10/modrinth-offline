@@ -36,3 +36,7 @@ A portable fork of the Modrinth desktop launcher with **no ads**, **no Microsoft
 <p align="center">
   <img src="ModrinthOfflineLogo2.png" alt="Modrinth Offline Logo 2">
 </p>
+
+<p align="center">
+  <img src="offlinemodrinthbanner.png" alt="Modrinth Offline Banner">
+</p>
