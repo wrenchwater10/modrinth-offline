@@ -1,54 +1,26 @@
-<picture>
-	<source media="(prefers-color-scheme: light)" srcset=".github/assets/monorepo_cover_light.png">
-	<img alt="Modrinth Monorepo Cover" src=".github/assets/monorepo_cover.png">
-</picture>
+# Modrinth App Fork (Portable / Offline Accounts)
 
-![Issues](https://img.shields.io/github/issues-raw/Modrinth/code?color=c78aff&label=issues&style=for-the-badge)
-![Pull Requests](https://img.shields.io/github/issues-pr-raw/Modrinth/code?color=c78aff&label=PRs&style=for-the-badge)
-![Contributors](https://img.shields.io/github/contributors/Modrinth/code?color=c78aff&label=contributors&style=for-the-badge)
-![Lines of Code](https://img.shields.io/endpoint?url=https://loctopus.creeperkatze.dev/github/modrinth/code/badge?style=flat&logoColor=white&color=c78aff&style=for-the-badge)
-![Commit Activity](https://img.shields.io/github/commit-activity/m/Modrinth/code?color=c78aff&label=commits&style=for-the-badge)
-![Last Commit](https://img.shields.io/github/last-commit/Modrinth/code?color=c78aff&label=last%20commit&style=for-the-badge)
+A portable fork of the Modrinth desktop launcher with **no ads**, **no Microsoft account required for offline profiles**, and **local/portable storage**.
 
-## Modrinth Monorepo
+## Features
 
-Welcome to the Modrinth Monorepo, the primary codebase for the Modrinth website, app, API and documentation. It contains ![Lines of code](https://img.shields.io/endpoint?url=https://loctopus.creeperkatze.dev/github/modrinth/code/badge%3Fformat%3Dhuman&logoColor=white&color=black&label=) lines of code and has ![Contributors](https://img.shields.io/github/contributors/Modrinth/code?color=black&label=) contributors!
+- **Portable Only:** Designed to run as a self-contained portable setup rather than a system-wide installation. Keep your launcher and data together in one folder/directory.
+- **Offline Accounts Without Microsoft Auth:** Create and use offline profiles locally without signing in with a Microsoft account.
+  - *Note:* Offline accounts only work on servers running in offline mode (`online-mode=false`). Accessing official Microsoft/Mojang-authenticated online servers still requires a valid purchased Minecraft account.
+- **Ad-Free:** Removes ads from the launcher experience.
 
-If you're not a developer and you've stumbled upon this repository, you can access the web interface on the [Modrinth website](https://modrinth.com) and download the latest release of the app [here](https://modrinth.com/app).
+## Usage / Portability
 
-## Development
+1. Extract or place the portable build into your preferred directory (for example, on a dedicated drive or USB storage).
+2. Run the executable directly from that folder so instances, profiles, and configs stay contained within your portable setup.
+3. Add an offline account from the account manager and launch your instance.
 
-This repository contains several projects. For detailed development information, please refer to their respective guides:
+## Important Notes & Limitations
 
-| Project       | Directory              | Guide                                                     |
-| ------------- | ---------------------- | --------------------------------------------------------- |
-| Website       | `apps/frontend`        | [Guide](https://docs.modrinth.com/contributing/knossos/)  |
-| App           | `apps/app`             | [Guide](https://docs.modrinth.com/contributing/theseus/)  |
-| API           | `apps/labrinth`        | [Guide](https://docs.modrinth.com/contributing/labrinth/) |
-| Documentation | `apps/docs`            | [Guide](https://docs.modrinth.com/contributing/docs/)     |
+- **Offline Mode Only:** Offline profiles do not authenticate with Mojang/Microsoft session servers. You cannot join `online-mode=true` multiplayer servers with an offline profile.
+- **Mod & Content Terms:** Third-party mods, modpacks, shaders, and resource packs remain subject to their respective creators' licenses and terms.
 
-Shared libraries live in `packages/`.
+## Disclaimer & Non-Affiliation
 
-## Contributing
-
-We welcome contributions! Before submitting any contributions, please read our [contributing guidelines](https://docs.modrinth.com/contributing/getting-started/).
-
-If you plan to fork this repository for your own purposes, please review our [copying guidelines](COPYING.md).
-
-## Sponsors
-
-[![CI powered by Namespace](https://namespace.so/oss/badge.svg)](https://namespace.so/github-actions/?utm_source=oss&utm_campaign=modrinth)
-
-Thanks to [Namespace](https://namespace.so/github-actions/?utm_source=oss&utm_campaign=modrinth) for sponsoring Modrinth's CI.
-
-## Security
-
-If you discover a security vulnerability within our codebase, please follow our [responsible disclosure guidelines](https://modrinth.com/legal/security).
-
-## Support
-
-If you need help with the Modrinth web interface or app, please visit our [support page](https://support.modrinth.com). For general inquiries, you can also join our [Discord server](https://discord.modrinth.com).
-
-## License
-
-All packages in this repository are licensed under their respective licenses. See the [copying guidelines](COPYING.md) for details, including restrictions on Modrinth branding.
+- **No Affiliation:** This project is an independent, unofficial fork. It is **not affiliated with, endorsed by, sponsored by, or associated with** Modrinth, Mojang AB, or Microsoft Corporation. All trademarks and brand names belong to their respective owners.
+- **Non-Profit:** This fork is provided strictly free of charge with **no profit**, monetization, paid tiers, donations, or commercial intent.
