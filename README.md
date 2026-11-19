@@ -27,4 +27,12 @@ A portable fork of the Modrinth desktop launcher with **no ads**, **no Microsoft
 ## Disclaimer & Non-Affiliation
 
 - **No Affiliation:** This project is an independent, unofficial fork. It is **not affiliated with, endorsed by, sponsored by, or associated with** Modrinth, Mojang AB, or Microsoft Corporation. All trademarks and brand names belong to their respective owners.
+- **Branding & Logos:** While this project has its own custom logo (displayed above), the compiled desktop application itself still uses the upstream Modrinth logo and UI assets. Retaining the original app icon does not imply any official connection to or endorsement by Modrinth.
 - **Non-Profit:** This fork is provided strictly free of charge with **no profit**, monetization, paid tiers, donations, or commercial intent.
+
+
+
+# Extra logos. 
+<p align="center">
+  <img src="ModrinthOfflineLogo2.png" alt="Modrinth Offline Logo 2">
+</p>
