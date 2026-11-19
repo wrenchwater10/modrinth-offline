@@ -1,18 +1,16 @@
 # Copying Guidelines
 
-All packages in this repository are licensed under their respective licenses. For more information, refer to the LICENSE file in each package.
+This repository is an independent, unofficial fork of the Modrinth App. All inherited packages, components, and source files remain licensed under their respective licenses and terms. Refer to each package's or component's `COPYING.md`, `LICENSE.txt`, or `LICENSE` file for details.
 
-For detailed information, consult each package's COPYING.md, LICENSE.txt, or LICENSE file, if available.
+## Upstream Attribution & Modrinth Branding
 
-## Modrinth Branding
-
-The use of Modrinth branding elements, including but not limited to the wrench-in-labyrinth logo, the landing image, and any variations thereof, is strictly prohibited without explicit written permission from Rinth, Inc. This includes trademarks, logos, or other branding elements.
+Modrinth branding elements—including the wrench-in-labyrinth logo, landing imagery, trademarks, and variations thereof—belong to Rinth, Inc. and are not licensed for use in this fork without explicit written permission from Rinth, Inc.
 
 > All rights reserved. © 2020-2026 Rinth, Inc.
 
-This includes, but may not be limited to, the following files or directories:
+Any original Modrinth branding assets (such as those previously located in `.idea/icon.svg` or `.github/assets/`) are excluded or replaced in this portable fork.
 
-- .idea/icon.svg
-- .github/assets/
+## Fork Assets & Modifications
 
-If you fork this repository, you must remove all Modrinth branding assets from your fork.
+- **Fork Changes & Custom Assets:** Modifications made in this fork and any custom assets created specifically for it are provided for non-commercial, personal/portable use unless stated otherwise in a specific file or directory.
+- **Third-Party Content:** Mods, modpacks, shaders, resource packs, and external tools referenced or loaded through the launcher remain the property and responsibility of their respective creators and subject to their own licenses.
