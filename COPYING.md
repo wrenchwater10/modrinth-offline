@@ -15,5 +15,4 @@ Any original Modrinth branding assets (such as those previously located in `.ide
 - **Fork Changes & Custom Assets:** Modifications made in this fork and any custom assets created specifically for it are provided for non-commercial, personal/portable use unless stated otherwise in a specific file or directory.
 - **Third-Party Content:** Mods, modpacks, shaders, resource packs, and external tools referenced or loaded through the launcher remain the property and responsibility of their respective creators and subject to their own licenses.
 
-
-(MODRINTH IS NOT AFFILIATED WITH THIS FORK.)
+# **(MODRINTH IS NOT AFFILIATED WITH THIS FORK.)**
