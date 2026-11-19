@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="modrinthoffline.png" alt="Modrinth Offline">
+</p>
+
 # Modrinth App Fork (Portable / Offline Accounts)
 
 A portable fork of the Modrinth desktop launcher with **no ads**, **no Microsoft account required for offline profiles**, and **local/portable storage**.
