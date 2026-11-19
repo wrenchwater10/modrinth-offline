@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="modrinthoffline.png" alt="Modrinth Offline">
+  <img src="modrintheere.png" alt="Modrinth Offline Logo">
 </p>
 
 # Modrinth App Fork (Portable / Offline Accounts)
